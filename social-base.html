@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SocialBase</title>
+  <style>
+    :root {
+      --bg: #e9ebee;
+      --panel: #ffffff;
+      --panel2: #f5f6f7;
+      --line: #d3d6db;
+      --text: #1d2129;
+      --muted: #606770;
+      --blue: #1877f2;
+      --blue-dark: #1665d8;
+      --green: #42b72a;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    a { color: var(--blue); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .topbar {
+      background: var(--blue);
+      color: white;
+      height: 56px;
+      border-bottom: 1px solid rgba(0,0,0,0.15);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .topbar-inner {
+      max-width: 1180px;
+      margin: 0 auto;
+      height: 56px;
+      display: grid;
+      grid-template-columns: 220px 1fr 320px;
+      gap: 16px;
+      align-items: center;
+      padding: 0 16px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 1.45rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .brand-badge {
+      width: 36px;
+      height: 36px;
+      border-radius: 4px;
+      background: white;
+      color: var(--blue);
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      font-size: 1.25rem;
+    }
+
+    .search {
+      display: flex;
+      align-items: center;
+      background: white;
+      border-radius: 18px;
+      padding: 0 12px;
+      height: 36px;
+      color: var(--muted);
+    }
+
+    .search input {
+      border: 0;
+      outline: none;
+      background: transparent;
+      width: 100%;
+      font-size: 0.95rem;
+      color: var(--text);
+      margin-left: 8px;
+    }
+
+    .top-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      align-items: center;
+      font-size: 0.9rem;
+    }
+
+    .top-link {
+      color: white;
+      padding: 8px 10px;
+      border-radius: 4px;
+      font-weight: 700;
+    }
+
+    .top-link:hover {
+      background: rgba(255,255,255,0.12);
+      text-decoration: none;
+    }
+
+    .shell {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 190px minmax(0, 1fr) 300px;
+      gap: 16px;
+      align-items: start;
+    }
+
+    .sidebar, .right-rail {
+      position: sticky;
+      top: 72px;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 1px 1px rgba(0,0,0,0.04);
+    }
+
+    .left-nav a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      color: var(--text);
+      font-size: 0.92rem;
+      font-weight: 700;
+    }
+
+    .left-nav a:hover {
+      background: #dde2ea;
+      text-decoration: none;
+    }
+
+    .nav-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: #dfe3ee;
+      display: grid;
+      place-items: center;
+      font-size: 0.86rem;
+    }
+
+    .profile-mini {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+      padding: 6px 8px;
+      border-radius: 8px;
+    }
+
+    .profile-mini:hover { background: #dde2ea; }
+
+    .avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #d9e8ff, #b7cef8);
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      color: #264f8b;
+      flex: 0 0 36px;
+    }
+
+    .composer { padding: 12px; margin-bottom: 16px; }
+
+    .composer-top {
+      display: grid;
+      grid-template-columns: 40px 1fr;
+      gap: 10px;
+      align-items: center;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .composer-input {
+      background: var(--panel2);
+      border-radius: 20px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      padding: 0 14px;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .composer-actions {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      padding-top: 10px;
+    }
+
+    .composer-action {
+      text-align: center;
+      padding: 10px 8px;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--muted);
+    }
+
+    .composer-action:hover { background: #f0f2f5; }
+
+    .feed { display: grid; gap: 16px; }
+
+    .post { padding: 12px; }
+
+    .post-head {
+      display: grid;
+      grid-template-columns: 40px 1fr auto;
+      gap: 10px;
+      align-items: start;
+    }
+
+    .post-name {
+      font-size: 0.95rem;
+      font-weight: 700;
+      line-height: 1.25;
+    }
+
+    .post-meta {
+      color: var(--muted);
+      font-size: 0.78rem;
+      margin-top: 2px;
+    }
+
+    .post-id {
+      color: var(--muted);
+      font-size: 0.76rem;
+      background: #f0f2f5;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 5px 8px;
+    }
+
+    .post-content {
+      margin-top: 10px;
+      font-size: 0.95rem;
+      line-height: 1.42;
+    }
+
+    .post-content p { margin: 0 0 10px; }
+
+    .media {
+      margin-top: 10px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      overflow: hidden;
+      background: #f8f9fb;
+    }
+
+    .media img {
+      display: block;
+      width: 100%;
+      height: auto;
+      aspect-ratio: 16 / 9;
+      object-fit: cover;
+    }
+
+    .link-share {
+      margin-top: 10px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      overflow: hidden;
+      background: #f8f9fb;
+    }
+
+    .link-thumb {
+      height: 180px;
+      background: linear-gradient(135deg, #dfe9ff, #e7eef9);
+      display: grid;
+      place-items: center;
+      color: #4d6482;
+      font-size: 1.3rem;
+      font-weight: 700;
+    }
+
+    .link-body { padding: 12px; }
+    .link-domain {
+      font-size: 0.75rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .link-title {
+      font-size: 1rem;
+      font-weight: 700;
+      line-height: 1.35;
+    }
+    .link-desc {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.35;
+    }
+
+    .counts {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: var(--muted);
+      font-size: 0.82rem;
+      margin-top: 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .post-actions {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      padding-top: 6px;
+    }
+
+    .action {
+      text-align: center;
+      padding: 10px 6px;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .action:hover { background: #f0f2f5; }
+
+    .section-title {
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin: 0 0 10px;
+    }
+
+    .rail-card { padding: 12px; margin-bottom: 16px; }
+
+    .trend-item, .contact-item {
+      display: flex;
+      align-items: start;
+      gap: 10px;
+      padding: 8px 0;
+      border-bottom: 1px solid #eef0f2;
+    }
+
+    .trend-item:last-child, .contact-item:last-child { border-bottom: 0; }
+
+    .trend-item strong, .contact-item strong {
+      display: block;
+      font-size: 0.9rem;
+      line-height: 1.3;
+    }
+
+    .trend-item span, .contact-item span {
+      color: var(--muted);
+      font-size: 0.82rem;
+      line-height: 1.3;
+    }
+
+    .checkin {
+      display: inline-block;
+      background: #f0f2f5;
+      color: #385898;
+      font-size: 0.82rem;
+      padding: 4px 8px;
+      border-radius: 999px;
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+
+    @media (max-width: 980px) {
+      .layout { grid-template-columns: 1fr; }
+      .sidebar, .right-rail { position: static; }
+      .sidebar, .right-rail { display: none; }
+      .topbar-inner { grid-template-columns: 170px 1fr; }
+      .top-actions { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <div class="brand-badge">SB</div>
+        <div>SocialBase</div>
+      </div>
+      <label class="search" aria-label="Search SocialBase">
+        <span>🔎</span>
+        <input type="text" value="Search SocialBase" aria-label="Search" />
+      </label>
+      <div class="top-actions">
+        <a href="#" class="top-link">Alex</a>
+        <a href="#" class="top-link">Home</a>
+        <a href="#" class="top-link">Find Friends</a>
+        <a href="#" class="top-link">Notifications</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="shell">
+    <div class="layout">
+      <aside class="sidebar">
+        <div class="profile-mini">
+          <div class="avatar">AV</div>
+          <div><strong>Alex Vale</strong></div>
+        </div>
+        <nav class="left-nav">
+          <a href="#"><span class="nav-icon">📰</span><span>News Feed</span></a>
+          <a href="#"><span class="nav-icon">👥</span><span>Friends</span></a>
+          <a href="#"><span class="nav-icon">📷</span><span>Photos</span></a>
+          <a href="#"><span class="nav-icon">🎬</span><span>Watch</span></a>
+          <a href="#"><span class="nav-icon">🛒</span><span>Marketplace</span></a>
+          <a href="#"><span class="nav-icon">🕘</span><span>On This Day</span></a>
+        </nav>
+      </aside>
+
+      <main>
+        <section class="card composer">
+          <div class="composer-top">
+            <div class="avatar">AV</div>
+            <div class="composer-input">What is on your mind, Alex?</div>
+          </div>
+          <div class="composer-actions">
+            <div class="composer-action">📹 Live Video</div>
+            <div class="composer-action">🖼 Photo/Video</div>
+            <div class="composer-action">😊 Feeling/Activity</div>
+          </div>
+        </section>
+
+        <section class="feed" aria-label="SocialBase feed">
+
+          <article class="card post" data-post-id="sb-post-011" data-post-type="text">
+            <div class="post-head">
+              <div class="avatar">CN</div>
+              <div>
+                <div class="post-name">Casey Nolen</div>
+                <div class="post-meta">3 hrs · Public</div>
+              </div>
+              <div class="post-id">sb-post-011</div>
+            </div>
+            <div class="post-content">
+              <p>Heading to the rally at the Capitol this afternoon. If you care about the future, show up, bring a sign, and make some noise.</p>
+              <div class="media">
+                <img src="https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?auto=format&fit=crop&w=1200&q=80" alt="Crowd gathered outside a capitol style government building during a rally" />
+              </div>
+            </div>
+            <div class="counts"><span>73 reactions</span><span>58 comments · 21 shares</span></div>
+            <div class="post-actions"><div class="action">Like</div><div class="action">Comment</div><div class="action">Share</div></div>
+          </article>
+
+          <article class="card post" data-post-id="sb-post-001" data-post-type="text">
+            <div class="post-head">
+              <div class="avatar">AV</div>
+              <div>
+                <div class="post-name">Alex Vale</div>
+                <div class="post-meta">8 mins · Public</div>
+              </div>
+              <div class="post-id">sb-post-001</div>
+            </div>
+            <div class="post-content">
+              <p>Going to see the new <strong>Scary Movie</strong> tonight. Love that every generation gets to pretend they invented dumb parody horror from scratch.</p>
+            </div>
+            <div class="counts"><span>124 reactions</span><span>18 comments · 4 shares</span></div>
+            <div class="post-actions"><div class="action">Like</div><div class="action">Comment</div><div class="action">Share</div></div>
+          </article>
+
+          <article class="card post" data-post-id="sb-post-006" data-post-type="ad">
+            <div class="post-head">
+              <div class="avatar">AD</div>
+              <div>
+                <div class="post-name">GlowForge Grooming</div>
+                <div class="post-meta">Sponsored</div>
+              </div>
+              <div class="post-id">sb-post-006</div>
+            </div>
+            <div class="post-content">
+              <p>Want to <strong>pick up more chicks</strong>? Clean up your look with the new GlowForge style kit. So sharp even the baby chickens notice.</p>
+              <div class="media">
+                <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=1200&q=80" alt="Well groomed person with a baby chick in a humorous grooming ad" />
+              </div>
+            </div>
+            <div class="counts"><span>Sponsored content</span><span>12 comments</span></div>
+            <div class="post-actions"><div class="action">Like</div><div class="action">Comment</div><div class="action">Share</div></div>
+          </article>
+
+          <article class="card post" data-post-id="sb-post-005" data-post-type="text">
+            <div class="post-head">
+              <div class="avatar">JP</div>
+              <div>
+                <div class="post-name">Jordan Pike shared Riley North's post</div>
+                <div class="post-meta">1 hr · Public</div>
+              </div>
+              <div class="post-id">sb-post-005</div>
+            </div>
+            <div class="post-content">
+              <p>Sharing because wow.</p>
+              <div class="link-share">
+                <div class="link-thumb">Shared Post</div>
+                <div class="link-body">
+                  <div class="link-domain">from Riley North</div>
+                  <div class="link-title">Alex keeps posting diner pics like that outfit is doing any favors. Maybe skip the burger and the mirror selfies for a week.</div>
+                  <div class="link-desc">3 reactions · 19 comments</div>
+                </div>
+              </div>
+            </div>
+            <div class="counts"><span>9 reactions</span><span>27 comments · 1 share</span></div>
+            <div class="post-actions"><div class="action">Like</div><div class="action">Comment</div><div class="action">Share</div></div>
+          </article>
+
+          <article class="card post" data-post-id="sb-post-002" data-post-type="image">
+            <div class="post-head">
+              <div class="avatar">AV</div>
+              <div>
+                <div class="post-name">Alex Vale</div>
+                <div class="post-meta">22 mins · Friends</div>
+              </div>
+              <div class="post-id">sb-post-002</div>
+            </div>
+            <div class="post-content">
+              <p>Not me acting like this burger place just changed civilization.</p>
+              <span class="checkin">Checked in at Orbit Diner</span>
+              <div class="media">
+                <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=1200&q=80" alt="Burger and fries at a diner table" />
+              </div>
+            </div>
+            <div class="counts"><span>301 reactions</span><span>52 comments · 9 shares</span></div>
+            <div class="post-actions"><div class="action">Like</div><div class="action">Comment</div><div class="action">Share</div></div>
+          </article>
+
+          <article class="card post" data-post-id="sb-post-007" data-post-type="ad">
+            <div class="post-head">
+              <div class="avatar">AD</div>
+              <div>
+                <div class="post-name">NovaBean Coffee</div>
+                <div class="post-meta">Sponsored</div>
+              </div>
+              <div class="post-id">sb-post-007</div>
+            </div>
+            <div class="post-content">
+              <p>2088 is moving fast. Your coffee should too. Try NovaBean cold brew and pretend you are suddenly the kind of person who answers messages right away.</p>
+            </div>
+            <div class="counts"><span>Sponsored content</span><span>8 comments</span></div>
+            <div class="post-actions"><div class="action">Like</div><div class="action">Comment</div><div class="action">Share</div></div>
+          </article>
+
+          <article class="card post" data-post-id="sb-post-010" data-post-type="text">
+            <div class="post-head">
+              <div class="avatar">AV</div>
+              <div>
+                <div class="post-name">Alex Vale</div>
+                <div class="post-meta">2 hrs · Public</div>
+              </div>
+              <div class="post-id">sb-post-010</div>
+            </div>
+            <div class="post-content">
+              <p>Started <strong>Pokemon Leaf Green</strong> again and somehow I still get emotionally invested in choosing a starter like it is a real life mortgage decision.</p>
+            </div>
+            <div class="counts"><span>198 reactions</span><span>41 comments · 5 shares</span></div>
+            <div class="post-actions"><div class="action">Like</div><div class="action">Comment</div><div class="action">Share</div></div>
+          </article>
+
+          <article class="card post" data-post-id="sb-post-008" data-post-type="ad">
+            <div class="post-head">
+              <div class="avatar">AD</div>
+              <div>
+                <div class="post-name">Moon Roast Drive Thru</div>
+                <div class="post-meta">Sponsored</div>
+              </div>
+              <div class="post-id">sb-post-008</div>
+            </div>
+            <div class="post-content">
+              <p>Now serving triple foam caramel cloud coffee. Drink one and become legally indistinguishable from a morning person.</p>
+              <div class="media">
+                <img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=1200&q=80" alt="Fancy coffee drink with foam art in a cafe" />
+              </div>
+            </div>
+            <div class="counts"><span>Sponsored content</span><span>5 comments</span></div>
+            <div class="post-actions"><div class="action">Like</div><div class="action">Comment</div><div class="action">Share</div></div>
+          </article>
+
+          <article class="card post" data-post-id="sb-post-003" data-post-type="text">
+            <div class="post-head">
+              <div class="avatar">AV</div>
+              <div>
+                <div class="post-name">Alex Vale</div>
+                <div class="post-meta">39 mins · Public</div>
+              </div>
+              <div class="post-id">sb-post-003</div>
+            </div>
+            <div class="post-content">
+              <p>The new <strong>Scrubs</strong> somehow feels both brand new and like it has always been on in the background of everyone's apartment.</p>
+            </div>
+            <div class="counts"><span>217 reactions</span><span>31 comments · 6 shares</span></div>
+            <div class="post-actions"><div class="action">Like</div><div class="action">Comment</div><div class="action">Share</div></div>
+          </article>
+
+          <article class="card post" data-post-id="sb-post-004" data-post-type="text">
+            <div class="post-head">
+              <div class="avatar">AV</div>
+              <div>
+                <div class="post-name">Alex Vale</div>
+                <div class="post-meta">1 hr · Public</div>
+              </div>
+              <div class="post-id">sb-post-004</div>
+            </div>
+            <div class="post-content">
+              <p>Trying to keep up with news about the war in the Middle East and it is exhausting. Every update is worse than the one before it.</p>
+            </div>
+            <div class="counts"><span>42 reactions</span><span>67 comments · 12 shares</span></div>
+            <div class="post-actions"><div class="action">Like</div><div class="action">Comment</div><div class="action">Share</div></div>
+          </article>
+
+          <article class="card post" data-post-id="sb-post-009" data-post-type="ad">
+            <div class="post-head">
+              <div class="avatar">AD</div>
+              <div>
+                <div class="post-name">CalmCore Stomach Relief</div>
+                <div class="post-meta">Sponsored</div>
+              </div>
+              <div class="post-id">sb-post-009</div>
+            </div>
+            <div class="post-content">
+              <p><strong>Too many tacos?</strong> Too much late‑night street food? CalmCore settles stomach drama fast so you can get back to pretending spicy food was a great idea.</p>
+              <div class="media">
+                <img src="https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=1200&q=80" alt="Bottle of stomach relief tablets on a clean background" />
+              </div>
+              <p style="font-size:0.9rem;color:#606770;margin-top:8px;">CalmCore chewable tablets. Fast relief for heartburn, reflux, and questionable food decisions.</p>
+            </div>
+            <div class="counts"><span>Sponsored content</span><span>14 comments · 6 shares</span></div>
+            <div class="post-actions"><div class="action">Like</div><div class="action">Comment</div><div class="action">Share</div></div>
+          </article>
+
+          <article class="card post" data-post-id="sb-post-012" data-post-type="text">
+            <div class="post-head">
+              <div class="avatar">TM</div>
+              <div>
+                <div class="post-name">Taylor Morrow</div>
+                <div class="post-meta">4 hrs · Public</div>
+              </div>
+              <div class="post-id">sb-post-012</div>
+            </div>
+            <div class="post-content">
+              <p>I am officially running for office. We can do better, we can expect more, and I hope you will be with me when I announce the full platform next week.</p>
+              <div class="media">
+                <img src="https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=1200&q=80" alt="Person speaking confidently at a political campaign style event" />
+              </div>
+            </div>
+            <div class="counts"><span>201 reactions</span><span>94 comments · 33 shares</span></div>
+            <div class="post-actions"><div class="action">Like</div><div class="action">Comment</div><div class="action">Share</div></div>
+          </article>
+
+        </section>
+      </main>
+
+      <aside class="right-rail">
+        <section class="card rail-card">
+          <div class="section-title">Trending</div>
+          <div class="trend-item"><div><strong>#ScaryMovie</strong><span>Parody horror is “back” again</span></div></div>
+          <div class="trend-item"><div><strong>#NewScrubs</strong><span>Everyone has a favorite reboot doctor</span></div></div>
+          <div class="trend-item"><div><strong>#LeafGreen</strong><span>Kanto discourse has returned</span></div></div>
+          <div class="trend-item"><div><strong>#MiddleEast</strong><span>Breaking international coverage</span></div></div>
+          <div class="trend-item"><div><strong>#LowRiseAgain</strong><span>Nobody learned anything</span></div></div>
+        </section>
+
+        <section class="card rail-card">
+          <div class="section-title">Contacts</div>
+          <div class="contact-item"><div class="avatar">JQ</div><div><strong>Jordan Quill</strong><span>online now</span></div></div>
+          <div class="contact-item"><div class="avatar">SM</div><div><strong>Sam Mercer</strong><span>online now</span></div></div>
+          <div class="contact-item"><div class="avatar">RT</div><div><strong>Riley Tate</strong><span>active 12m ago</span></div></div>
+          <div class="contact-item"><div class="avatar">MK</div><div><strong>Morgan Kade</strong><span>active 1h ago</span></div></div>
+        </section>
+      </aside>
+    </div>
+  </div>
+</body>
+</html>
